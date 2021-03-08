@@ -18,12 +18,18 @@ public class Henderson_Temperature_File
 		
 		Path file = Paths.get("DailyTemperatures.txt");
 		OutputStream output = null;
-		String day, high, low, fileOut = "", delimiter = ",";
+		String day, tempFile, high = null, low = null, fileOut = null, delimiter = ",";
+		String [] fileArray = new String[3];
+		String nLine = System.lineSeparator();
 		String checkFile = "";
-		char quit = 'n';
+		char quit = 'r';
 		int count = 0;
-		double avgHigh, avgLow;
+		int dayHigh, dayLow, totalHigh = 0, totalLow = 0;
+		final String HEADER_FORMAT = "%-15s%-15s%-15s%n";
+		final String TEMP_FORMAT = "%-15s%-15s%-15s%n";
 		
+		
+		//****Write to file****
 	    try
 	    {
 	    	try
@@ -50,11 +56,8 @@ public class Henderson_Temperature_File
 	        {
 	    	   	output = new BufferedOutputStream(Files.newOutputStream
 	  			  (file, StandardOpenOption.CREATE)); 
-	    	    System.out.print("The file \'StudentGradesFile.txt\' has been created\n\n");
+	    	    System.out.print("The file \'DailyTemperatures.txt\' has been created\n\n");
 	        }
-	    	
-	        BufferedWriter writer = new BufferedWriter
-	  			  (new OutputStreamWriter(output)); 
 		    
 	        do
 	        {
@@ -66,53 +69,61 @@ public class Henderson_Temperature_File
 			        high = kb.next();
 			        System.out.println("Enter the low for " + day);
 			        low = kb.next();
-			        fileOut = day + delimiter + high + delimiter + low;
+
 		        }
 		        catch(InputMismatchException ime)
 		        {
 		        	System.out.println("ERROR: Enter a numeric value");
 		        }
-		        try
-		        {
-		        	System.out.println("Enter another day? y/n ");
-		        	quit = kb.next().charAt(0);
-		        }
-		        catch(InputMismatchException ime)
-		        {
-		        	System.out.println("Enter y or n");
-		        	
-		        }
+			    System.out.println("Enter another day? y/n ");
+			    quit = kb.next().toLowerCase().charAt(0);
+		        fileOut = day + delimiter + high + delimiter + low + nLine;
+		        output.write(fileOut.getBytes());
 	        }
-	        while(quit != 'y' || quit != 'Y');
-
+	        while(quit != 'n');
+	        {
+	        	output.flush();
+	        }
+	        output.close();
 	    }
 	    catch(IOException ioe)
 	    {
 	    	System.out.print("File cannot be used.");
 	    }
-	        
-/*	        int indexOfDay = dayNames.indexOf(wkDay);
-	        if(indexOfDay != -1)
-	        {
-	        	System.out.print("The temperature for " + dayNames.get(indexOfDay) + " is " + dayTemps.get(indexOfDay) + " degrees.");
-	        }
-	        else if(wkDay.equals("week"))
-	        {
-	        	float averageTemp = 0;
-	        	for (Integer dayTemp : dayTemps)
-	        	{
-	        		averageTemp += dayTemp;
-	        	}
-	        	averageTemp /= dayTemps.size();
-	        	System.out.print("The average temperature for the week is " + averageTemp + " degrees");
-	        }
-	        else
-	        {
-	        	System.out.println("Wrong entry: " + wkDay);
-	        }*/
-		      
-
 	    kb.close();  
 	    
+	    //****Read from file****
+	    try
+	    {
+	    	InputStream fileIn = new BufferedInputStream(Files.newInputStream(file));
+	    	BufferedReader reader = new BufferedReader(new InputStreamReader(fileIn));
+	    	tempFile = reader.readLine();
+	    	System.out.printf(HEADER_FORMAT, "Weekday", "High Temp", "Low Temp");
+	    	while (tempFile != null)
+	    	{
+	    		fileArray = tempFile.split(delimiter);
+	    		day = fileArray[0];
+	    		dayHigh = Integer.parseInt(fileArray[1]);
+	    		dayLow = Integer.parseInt(fileArray[2]);
+	    		totalHigh += dayHigh;
+	    		totalLow += dayLow;
+	    		count++;
+	    		
+	    		System.out.printf(TEMP_FORMAT, day, dayHigh, dayLow);
+	    		tempFile = reader.readLine();
+	    	}
+	    	reader.close();
+	    	System.out.println("High Temperature Average: " + calculateAverage(totalHigh,count));
+	    	System.out.println("Low Temperature Average: " + calculateAverage(totalLow,count));
+	    }
+	    catch(IOException ioe)
+	    {
+	    	System.out.println("ERROR: File Cannot Be Read");
+	    }
+	}
+
+	public static int calculateAverage(int total, int count)
+	{
+		return total / count;
 	}
 }
