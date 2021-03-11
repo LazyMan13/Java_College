@@ -12,9 +12,14 @@ public class JFrame1
 		JFrame aFrame = new JFrame("First Name");
 		aFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		aFrame.setVisible(true);
+		aFrame.setResizable(true);
 		aFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		JLabel greeting = new JLabel("Good day");
-		greeting.setFont(headlineFont);
+		JLabel greeting = new JLabel("Hello");
+		JLabel greeting2 = new JLabel("Who are you?");
+		//greeting.setFont(headlineFont);	//sets the font on greeting
+		aFrame.setLayout(new FlowLayout());
 		aFrame.add(greeting);
+		aFrame.add(greeting2);
+		//greeting.setText("Howdy");	//changes the text of greeting
 	}
 }
