@@ -1,6 +1,5 @@
 import java.io.*;
 import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
