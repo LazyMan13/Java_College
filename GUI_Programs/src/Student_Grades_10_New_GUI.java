@@ -172,7 +172,7 @@ public class Student_Grades_10_New_GUI extends JFrame
     
     buttonPanel = new JPanel();
     buttonPanel.setBackground(Color.WHITE);
-    buttonPanel.setLayout(new GridLayout(2,6));
+    buttonPanel.setLayout(new GridLayout(2,7));	//set num of columns to correct value even tho it doesn't matter
 
     JButton StuNameButton = new JButton("Student Name");
     StuNameButton.addActionListener(new Listener());
